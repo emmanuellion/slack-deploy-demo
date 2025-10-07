@@ -1,0 +1,40 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: "Application à déployer (ex: web, api)"
+        required: true
+        type: string
+        default: "web"
+      env:
+        description: "Environnement (dev, staging, prod)"
+        required: true
+        type: string
+        default: "staging"
+
+jobs:
+  deploy:
+    name: Deploy ${{ inputs.app }} to ${{ inputs.env }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Afficher les inputs
+        run: |
+          echo "App: ${{ inputs.app }}"
+          echo "Env: ${{ inputs.env }}"
+
+      - name: Déploiement (script)
+        run: |
+          bash scripts/deploy.sh "${{ inputs.app }}" "${{ inputs.env }}"
+
+      # Exemple: vous pouvez injecter des secrets GitHub si nécessaire
+      # - name: Exemple d'utilisation d'un secret
+      #   env:
+      #     API_KEY_BACKEND: ${{ secrets.API_KEY_BACKEND }}
+      #   run: |
+      #     echo "API_KEY_BACKEND est disponible (non affiché pour sécurité)"
